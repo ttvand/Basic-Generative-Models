@@ -81,7 +81,7 @@ def mnist_gan(hyperpars):
                     outputs=generator_outputs, name='generator')
   
   # 3) Chain the generator and discriminator to obtain a model that outputs
-  #    a probability that the generated image is fake
+  #    a probability that the generated image is a real (non-generated) image.
   adversarial_prob_output = discriminator(
       [generator([noise_inputs, label_inputs]), label_inputs])
   adversarial_prob_model = Model(
