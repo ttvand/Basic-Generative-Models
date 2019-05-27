@@ -13,7 +13,7 @@ from keras.models import load_model
 from keras.utils import plot_model
 from keras.utils import to_categorical
 
-# Hyperparameters
+# Execution and model (hyper)parameters
 mode = ['train', 'inspect', 'train_inspect'][2]
 save_path_generator = 'gan_generator.h5'
 save_path_discriminator = 'gan_discriminator.h5'

@@ -91,6 +91,8 @@ def mnist_gan(hyperpars):
   return (discriminator, generator, adversarial_prob_model)
 
 
+# Fit logic - custom since the GAN setup required alternated updates of the
+# Discriminator and Generator.
 def my_gan_fit(train_gen, discriminator, generator, adversarial_prob_model,
                hyperpars):
   num_epochs = hyperpars['num_epochs']
@@ -115,14 +117,15 @@ def my_gan_fit(train_gen, discriminator, generator, adversarial_prob_model,
           [generated_noise, generated_labels], np.ones(half_batch_size))
       
       if batch_in_epoch % 500 == 0:
-        print(discr_loss, gen_loss)
+        print('Discr loss: {}; Gen loss: {}'.format(discr_loss, gen_loss))
       
     # End of epoch logic
-    plot_generated_images(epoch_step, train_gen, generator, hyperpars)
+    plot_generated_images(epoch_step, generator, hyperpars)
     
     
-def plot_generated_images(epoch_step, train_gen, generator, hyperpars,
-                          model_name='gan_mnist_figures', digit_size=28):
+# Plot and store images with a given generator.
+def plot_generated_images(epoch_step, generator, hyperpars, digit_size=28,
+                          model_name='gan_mnist_figures'):
   # Generate random samples
   # Keep the random latent samples fixed for all digits if using CVAE -
   # his way you can inspect if the latent space is meaningful
@@ -149,70 +152,3 @@ def plot_generated_images(epoch_step, train_gen, generator, hyperpars,
   plt.imshow(figure, cmap='Greys_r')
   plt.savefig(filename)
   plt.show()
-
-
-# Custom Callback for checkpointing a specific model
-# Inspired by https://stackoverflow.com/questions/50983008/how-to-save-best-weights-of-the-encoder-part-only-during-auto-encoder-training
-# Callback source: https://github.com/keras-team/keras/blob/master/keras/callbacks.py#L633
-# Terrible BUG: the main model is saved when calling the second variabel model.
-class CustomCheckpointer(keras.callbacks.Callback):
-  def __init__(self, filepath, custom_model, monitor, mode, save_best_only,
-               verbose=0, verbose_description='encoder'):
-    self.filepath = filepath
-    self.custom_model = custom_model
-    self.monitor = monitor
-    self.save_best_only = save_best_only
-    self.verbose = verbose
-    self.description = verbose_description
-    
-    print('Initializing custom checkpointer for model `{}`.'.format(
-        self.custom_model.name))
-    self.monitor_op = np.less if mode == 'min' else np.greater
-    self.best = np.Inf if mode == 'min' else -np.Inf
-  
-  def on_epoch_end(self, epoch, logs=None):
-    current = logs.get(self.monitor)
-    if not self.save_best_only or self.monitor_op(current, self.best):
-      if self.verbose > 0:
-        print('Saving the custom {} model to {}'.format(
-            self.description, self.filepath))
-      self.best = current
-      self.custom_model.save(self.filepath, overwrite=True)
-      
-      
-# Custom Keras callback for plotting learning progress
-class PlotLosses(keras.callbacks.Callback):
-  def on_train_begin(self, logs={}):
-    self.i = 0
-    self.x = []
-    self.val_losses = []
-    self.fig = plt.figure()
-    self.logs = []
-    
-    loss_extensions = ['', 'reconstruction', 'kl']
-    self.best_loss_key = 'loss'
-    self.loss_keys = [e + ('_' if e else '') + 'loss' for e in loss_extensions]
-    self.losses = {k: [] for k in self.loss_keys}
-
-  def on_epoch_end(self, epoch, logs={}):
-    self.logs.append(logs)
-    self.x.append(self.i)
-    for k in self.loss_keys:
-      self.losses[k].append(logs.get(k))
-    self.i += 1
-    
-    best_loss = np.repeat(np.array(self.losses[self.best_loss_key]).min(),
-                              self.i).tolist()
-    best_id = (1+np.repeat(
-        np.array(self.losses[self.best_loss_key]).argmin(), 2)).tolist()
-    for k in self.loss_keys:
-      plt.plot([1+x for x in self.x], self.losses[k], label=k)
-    all_losses = np.array(list(self.losses.values())).flatten()
-    if len(self.losses) > 1:
-      plt.plot([1+x for x in self.x], best_loss, linestyle="--", color="r",
-               label="")
-      plt.plot(best_id, [0, best_loss[0]],
-               linestyle="--", color="r", label="")
-    plt.ylim(0, max(all_losses) + 0.1)
-    plt.legend()
-    plt.show()

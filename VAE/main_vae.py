@@ -16,8 +16,8 @@ from keras.models import load_model
 from keras.utils import plot_model
 from keras.utils import to_categorical
 
-# Hyperparameters
-mode = ['train', 'inspect', 'train_inspect'][1]
+# Execution and model (hyper)parameters
+mode = ['train', 'inspect', 'train_inspect'][2]
 save_path_encoder = 'vae_encoder.h5'
 save_path_decoder = 'vae_decoder.h5'
 hyperpars = {

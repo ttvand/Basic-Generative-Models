@@ -29,6 +29,7 @@ def conditional_vae_generator(images, labels, batch_size):
       # Two inputs, no output
       yield [batch_images, batch_labels], [] 
 
+
 # Reparameterization trick
 # instead of sampling from Q(z|X), sample eps = N(0,I)
 # z = z_mean + z_std*eps
@@ -55,6 +56,7 @@ def vae_loss(z_mean, z_std, inputs, outputs, image_size, hyperpars):
   metrics = {'reconstruction_loss': rec_loss, 'kl_loss': kl_loss}
   
   return [rec_loss, kl_loss], metrics
+
 
 # MNIST autoencoder model
 def mnist_vae(hyperpars):
@@ -121,6 +123,7 @@ def add_custom_metrics(model, custom_metrics):
     model.metrics_tensors.append(custom_metrics[k])
 
 
+# Generate plots of the latent space, reconstructions and random samples.
 def plot_results(models, data, latent_dim=2, conditional=False, batch_size=128,
                  model_name='vae_mnist_figures'):
   """Plots labels and MNIST digits as function of 2-dim latent vector."""
