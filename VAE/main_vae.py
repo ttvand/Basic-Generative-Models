@@ -2,6 +2,7 @@
 # Adapted from https://keras.io/examples/variational_autoencoder_deconv/
 # Inspired by https://wiseodd.github.io/techblog/2016/12/17/conditional-vae/
 # Potential improvements:
+#  - Conditional digit MLP encoder instead of simple one-hot encoding
 #  - Low priority: Tackle checkerboard artifacts due to transposed convolution
 #    https://stackoverflow.com/questions/45559846/how-to-remove-deconvolution-noise-in-style-transfer-neural-network
 import math

@@ -2,6 +2,7 @@
 # Inspired by https://medium.com/datadriveninvestor/generative-adversarial-network-gan-using-keras-ce1c05cfdfd3
 # Loosely inspired by https://towardsdatascience.com/gan-by-example-using-keras-on-tensorflow-backend-1a6d515a60d0
 # Potential next steps:
+#   - Conditional digit MLP encoder instead of simple one-hot encoding
 #   - Non symmetric Generator-Discriminator structure
 #   - Use upsampling (UpSampling2D) instead of fractionally-strided convolution
 import numpy as np
@@ -22,7 +23,7 @@ hyperpars = {
     'num_epochs': 100,
     'initial_lr_discriminator': 4e-4, # Makes sense since it sees double data
     'initial_lr_generator': 8e-4,
-    'true_data_target_prob': 1.0,
+    'true_data_target_prob': 0.9,
     
     'filters_kernels_strides': [(32, 3, 2), (16, 3, 2)],
 #    'filters_kernels_strides': [(32, 3, 2), (16, 3, 1)],
