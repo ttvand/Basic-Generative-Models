@@ -40,6 +40,7 @@ def sample_gaussian(args):
   return z_mean + z_std * epsilon
 
 
+# VAE loss - reconstruction + beta*kl_loss
 def vae_loss(z_mean, z_std, inputs, outputs, image_size, hyperpars):
   rec_loss = mse(K.flatten(inputs), K.flatten(outputs))
   rec_loss = K.mean(rec_loss*image_size*image_size)
