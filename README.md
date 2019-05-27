@@ -6,3 +6,5 @@ There is a separate folder for Variational AutoEncoders (VAE) and Generative Adv
 Both generative model folders consist of a main file and a utilities file. All hyperparameters, training and inspection logic is located in a concise main file with all additional logic in the utilities file.
 
 Both models also allow basic conditional encoding/decoding and generation/discrimination of MNIST digits.
+
+DISCLAIMER: these models are not tuned for performance.
