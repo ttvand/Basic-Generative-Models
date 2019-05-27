@@ -3,6 +3,6 @@ This repository contains some starter code to train and inspect basic generative
 
 There is a separate folder for Variational AutoEncoders (VAE) and Generative Adversarial Networks (GAN).
 
-Both generative models consist of a main file and a utilities file. All hyperparameters, training and inspection logic is located in a concise main file with all additional logic in the utilities file.
+Both generative model folders consist of a main file and a utilities file. All hyperparameters, training and inspection logic is located in a concise main file with all additional logic in the utilities file.
 
 Both models also allow basic conditional encoding/decoding and generation/discrimination of MNIST digits.
