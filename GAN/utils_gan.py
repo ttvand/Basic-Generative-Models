@@ -129,6 +129,7 @@ def plot_generated_images(epoch_step, generator, hyperpars, digit_size=28,
   # Generate random samples
   # Keep the random latent samples fixed for all digits if using CVAE -
   # his way you can inspect if the latent space is meaningful
+  os.makedirs(model_name, exist_ok=True)
   filename = os.path.join(
       model_name, "gan_samples_epoch_" + str(epoch_step) + ".png")
   latent_dim = hyperpars['latent_dim'] 
