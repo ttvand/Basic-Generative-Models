@@ -58,6 +58,7 @@ def vae_loss(z_mean, z_std, inputs, outputs, image_size, hyperpars):
 # MNIST autoencoder model
 def mnist_vae(hyperpars):
   image_size = 28
+  # 1) Encoder
   image_inputs = Input((image_size, image_size, 1), name='image_inputs')
   label_inputs = Input((10,), dtype='float32', name='label_inputs')
   x = image_inputs
@@ -76,7 +77,10 @@ def mnist_vae(hyperpars):
   latents = Lambda(
       sample_gaussian, output_shape=(hyperpars['latent_dim'],), name='z')(
           [z_mean, z_std])
+  encoder = Model(inputs=[image_inputs, label_inputs],
+                  outputs=[z_mean, z_std, latents], name='encoder')
   
+  # 2) Decoder
   latent_inputs = Input(shape=(hyperpars['latent_dim'],), name='latent_inputs')
   x = latent_inputs
   if hyperpars['conditional_vae']:
@@ -89,15 +93,14 @@ def mnist_vae(hyperpars):
   decoder_outputs = Conv2DTranspose(
       filters=1, kernel_size=3, activation='sigmoid', padding='same',
       name='decoder_outputs')(x)
-  
-  encoder = Model(inputs=[image_inputs, label_inputs],
-                  outputs=[z_mean, z_std, latents], name='encoder')
   decoder = Model(inputs=[latent_inputs, label_inputs],
                   outputs=decoder_outputs, name='decoder')
   
+  # 3) Combine the encoder and decoder into a Model with a custom loss.
   # Compute loss here because the VAE loss does not follow the standard format
   # See https://stackoverflow.com/questions/50063613/add-loss-function-in-keras
-  outputs = decoder([ # decoder input = encoder output
+  # first decoder input = third encoder output
+  outputs = decoder([ 
       encoder([image_inputs, label_inputs])[2], label_inputs]) 
   losses, metrics = vae_loss(z_mean, z_std, image_inputs, outputs, image_size,
                              hyperpars)  
@@ -108,7 +111,8 @@ def mnist_vae(hyperpars):
   
   return (model, encoder, decoder, metrics)
 
-# Hack to add custom metrics
+
+# Hack to add custom metrics when using add_loss
 # Credit to May4m from https://github.com/keras-team/keras/issues/9459
 def add_custom_metrics(model, custom_metrics):
   for k in custom_metrics:
