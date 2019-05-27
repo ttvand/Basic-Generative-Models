@@ -17,6 +17,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import os
 
+
 # Input data generator
 def conditional_vae_generator(images, labels, batch_size):
   steps_per_epoch=images.shape[0] // batch_size
@@ -98,7 +99,7 @@ def mnist_vae(hyperpars):
       name='decoder_outputs')(x)
   decoder = Model(inputs=[latent_inputs, label_inputs],
                   outputs=decoder_outputs, name='decoder')
-  
+
   # 3) Combine the encoder and decoder into a Model with a custom loss.
   # Compute loss here because the VAE loss does not follow the standard format
   # See https://stackoverflow.com/questions/50063613/add-loss-function-in-keras

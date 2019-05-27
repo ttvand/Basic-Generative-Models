@@ -1,7 +1,6 @@
 # Basic GAN MNIST - utilities
 # Inspired by https://medium.com/datadriveninvestor/generative-adversarial-network-gan-using-keras-ce1c05cfdfd3
 # Loosely inspired by https://towardsdatascience.com/gan-by-example-using-keras-on-tensorflow-backend-1a6d515a60d0
-import keras
 from keras import backend as K
 from keras.layers import Conv2D
 from keras.layers import Conv2DTranspose
@@ -17,6 +16,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import os
 from tqdm import tqdm
+
 
 # Input data generator
 def conditional_gan_generator(images, labels, hyperpars):
@@ -41,6 +41,7 @@ def conditional_gan_generator(images, labels, hyperpars):
       # Two inputs, no outputs, flag if the epoch has been exhausted
       yield (data_images, data_labels, generated_noise, generated_labels,
              is_true_im, i==(steps_per_epoch-1))
+
 
 # MNIST GAN model
 def mnist_gan(hyperpars):
