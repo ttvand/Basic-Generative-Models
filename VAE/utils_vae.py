@@ -226,7 +226,7 @@ def plot_results(models, data, latent_dim=2, conditional=False, batch_size=128,
 # Custom Callback for checkpointing a specific model
 # Inspired by https://stackoverflow.com/questions/50983008/how-to-save-best-weights-of-the-encoder-part-only-during-auto-encoder-training
 # Callback source: https://github.com/keras-team/keras/blob/master/keras/callbacks.py#L633
-# Terrible BUG: the main model is saved when calling the second variabel model.
+# Terrible BUG: the main model is saved when calling the second variable model.
 class CustomCheckpointer(keras.callbacks.Callback):
   def __init__(self, filepath, custom_model, monitor, mode, save_best_only,
                verbose=0, verbose_description='encoder'):
