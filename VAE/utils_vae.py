@@ -68,7 +68,7 @@ def mnist_vae(hyperpars):
   x = image_inputs
   for (filters, kernel, strides) in hyperpars['filters_kernels_strides']:
     x = Conv2D(filters=filters, kernel_size=kernel, strides=strides,
-               padding='same')(x)
+               padding='same', activation='relu')(x)
   shape = K.int_shape(x) # shape info needed to build decoder model
   print('Shape after convolution: {}'.format(shape))
   x = Flatten()(x)
@@ -93,7 +93,7 @@ def mnist_vae(hyperpars):
   x = Reshape((shape[1], shape[2], shape[3]))(x)
   for (filters, kernel, strides) in hyperpars['filters_kernels_strides'][::-1]:
     x = Conv2DTranspose(filters=filters, kernel_size=kernel, strides=strides,
-                        padding='same')(x)
+                        padding='same', activation='relu')(x)
   decoder_outputs = Conv2DTranspose(
       filters=1, kernel_size=3, activation='sigmoid', padding='same',
       name='decoder_outputs')(x)
@@ -106,6 +106,7 @@ def mnist_vae(hyperpars):
   # first decoder input = third encoder output
   outputs = decoder([ 
       encoder([image_inputs, label_inputs])[2], label_inputs]) 
+  import pdb; pdb.set_trace()
   losses, metrics = vae_loss(z_mean, z_std, image_inputs, outputs, image_size,
                              hyperpars)  
   

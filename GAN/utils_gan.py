@@ -53,7 +53,7 @@ def mnist_gan(hyperpars):
   x = image_inputs
   for (filters, kernel, strides) in hyperpars['filters_kernels_strides']:
     x = Conv2D(filters=filters, kernel_size=kernel, strides=strides,
-               padding='same')(x)
+               padding='same', activation='relu')(x)
   shape = K.int_shape(x) # shape info needed to build decoder model
   print('Shape after convolution: {}'.format(shape))
   x = Flatten()(x)
@@ -74,7 +74,7 @@ def mnist_gan(hyperpars):
   x = Reshape((shape[1], shape[2], shape[3]))(x)
   for (filters, kernel, strides) in hyperpars['filters_kernels_strides'][::-1]:
     x = Conv2DTranspose(filters=filters, kernel_size=kernel, strides=strides,
-                        padding='same')(x)
+                        padding='same', activation='relu')(x)
   generator_outputs = Conv2DTranspose(
       filters=1, kernel_size=3, activation='sigmoid', padding='same',
       name='generator_outputs')(x)
